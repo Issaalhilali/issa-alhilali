@@ -10,31 +10,37 @@ import 'package:quizu/utli/global.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Repository {
-  void login(BuildContext context, String phone) async {
+  //for new user
+  login(BuildContext context, String phone) async {
     var pref = await SharedPreferences.getInstance();
     Map data = {"OTP": "0000", "mobile": phone};
+    setHeaders() => {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+        };
     final body = json.encode(data);
     final url = Uri.parse(ApiCOnst.baseUrl + ApiCOnst.loginUrl);
 
-    var response = await http.post(url, body: body);
+    var response = await http.post(url, body: body, headers: setHeaders());
     try {
-      if (response.statusCode == 200) {
-        final result = LoginModel.fromJson(jsonDecode(response.body));
-        if (result.token != null) {
-          pref.setString(ShareConst.shareToekn, result.token!);
-
-          // ignore: use_build_context_synchronously
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const OtpScreen()),
-              (route) => false);
-          // ignore: use_build_context_synchronously
-          messagesnackbar(context, 'Welcome', Colors.green);
-        }
-      } else {
-        Map resulterror = jsonDecode(response.body);
+      // if (response.statusCode == 20) {
+      final result = LoginModel.fromJson(jsonDecode(response.body));
+      if (result.token != null) {
+        pref.setString(ShareConst.shareToekn, result.token!);
+        print(result.token);
         // ignore: use_build_context_synchronously
-        messagesnackbar(context, resulterror.values.first, Colors.red);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const OtpScreen()),
+            (route) => false);
+        // ignore: use_build_context_synchronously
+        messagesnackbar(context, result.msg.toString(), Colors.green);
+      }
+      // }
+      else {
+        final result = errorlogin.fromJson(jsonDecode(response.body));
+        // ignore: use_build_context_synchronously
+        messagesnackbar(context, result.msg.toString(), Colors.red);
       }
     } catch (e) {
       throw Exception(e.toString());

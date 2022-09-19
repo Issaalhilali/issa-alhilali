@@ -8,6 +8,11 @@ class OtpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('OTP'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
       body: Container(),
     );
   }
