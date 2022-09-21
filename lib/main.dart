@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quizu/data/share_const.dart';
+import 'package:quizu/repository/auth/auth.dart';
 import 'package:quizu/screens/home/home_screen.dart';
+import 'package:quizu/screens/login/complete.dart';
 import 'package:quizu/screens/login/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,12 +28,15 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'QuizU',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return RepositoryProvider(
+      create: (context) => Repository(),
+      child: MaterialApp(
+        title: 'QuizU',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: widget.token == null ? const LoginScreen() : const HomeScreen(),
       ),
-      home: widget.token == null ? const LoginScreen() : const HomeScreen(),
     );
   }
 }

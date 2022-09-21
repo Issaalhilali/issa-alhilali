@@ -1,3 +1,3 @@
 class ShareConst {
-  static const String shareToekn = 'Token';
+  static const String shareToekn = 'token';
 }

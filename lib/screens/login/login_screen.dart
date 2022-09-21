@@ -2,7 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-import 'package:quizu/repository/repository.dart';
+import 'package:quizu/repository/auth/auth.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -18,12 +18,20 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   @override
   void initState() {
-    logi();
+    // logi();
     super.initState();
   }
 
-  logi() async {
-    await repository.login(context, controller.text.trim());
+  login() async {
+    setState(() {
+      _isLoading = true;
+    });
+    if (controller.text.isNotEmpty) {
+      await repository.login(context, controller.text.trim());
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -32,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Container(
-            padding: EdgeInsets.all(30),
+            padding: const EdgeInsets.all(30),
             width: double.infinity,
             height: MediaQuery.of(context).size.height,
             child: Column(
@@ -71,80 +79,76 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   height: 30,
                 ),
-                // FadeInDown(
-                //   delay: const Duration(milliseconds: 400),
-                //   child: Container(
-                //     padding:
-                //         const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                //     decoration: BoxDecoration(
-                //       color: Colors.white,
-                //       borderRadius: BorderRadius.circular(8),
-                //       border: Border.all(color: Colors.black.withOpacity(0.13)),
-                //       boxShadow: [
-                //         BoxShadow(
-                //           color: Color(0xffeeeeee),
-                //           blurRadius: 10,
-                //           offset: Offset(0, 4),
-                //         ),
-                //       ],
-                //     ),
-                //     child: Stack(
-                //       children: [
-                //         InternationalPhoneNumberInput(
-                //           initialValue:
-                //               PhoneNumber(isoCode: 'SA', dialCode: ''),
-
-                //           onInputChanged: (PhoneNumber number) {
-                //             print(number.phoneNumber);
-                //           },
-                //           onInputValidated: (bool value) {
-                //             print(value);
-                //           },
-                //           selectorConfig: const SelectorConfig(
-                //             selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-                //           ),
-                //           ignoreBlank: false,
-                //           autoValidateMode: AutovalidateMode.disabled,
-                //           selectorTextStyle:
-                //               const TextStyle(color: Colors.black),
-                //           // textFieldController: controller,
-                //           formatInput: false,
-                //           maxLength: 10,
-                //           keyboardType: const TextInputType.numberWithOptions(
-                //               signed: true, decimal: true),
-                //           cursorColor: Colors.black,
-                //           inputDecoration: InputDecoration(
-                //             contentPadding:
-                //                 const EdgeInsets.only(bottom: 15, left: 0),
-                //             border: InputBorder.none,
-                //             hintText: 'Phone Number',
-                //             hintStyle: TextStyle(
-                //                 color: Colors.grey.shade500, fontSize: 16),
-                //           ),
-                //           // onSubmit: () {
-                //           //   Repository.login(context, controller.text.trim());
-                //           // },
-                //           onSaved: (PhoneNumber number) {
-                //             print('On Saved: $number');
-                //           },
-                //         ),
-                //         Positioned(
-                //           left: 90,
-                //           top: 8,
-                //           bottom: 8,
-                //           child: Container(
-                //             height: 40,
-                //             width: 1,
-                //             color: Colors.black.withOpacity(0.13),
-                //           ),
-                //         )
-                //       ],
-                //     ),
-                //   ),
-                // ),
-                TextFormField(
-                  controller: controller,
+                FadeInDown(
+                  delay: const Duration(milliseconds: 400),
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.black.withOpacity(0.13)),
+                      // boxShadow: [
+                      //   BoxShadow(
+                      //     color: Color(0xffeeeeee),
+                      //     blurRadius: 10,
+                      //     offset: Offset(0, 4),
+                      //   ),
+                      // ],
+                    ),
+                    child: Stack(
+                      children: [
+                        InternationalPhoneNumberInput(
+                          initialValue:
+                              PhoneNumber(isoCode: 'SA', dialCode: ''),
+                          onInputChanged: (PhoneNumber number) {
+                            print(number.phoneNumber);
+                          },
+                          onInputValidated: (bool value) {
+                            print(value);
+                          },
+                          selectorConfig: const SelectorConfig(
+                            selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                          ),
+                          ignoreBlank: false,
+                          // autoValidateMode: AutovalidateMode.disabled,
+                          selectorTextStyle:
+                              const TextStyle(color: Colors.black),
+                          textFieldController: controller,
+                          formatInput: false,
+                          maxLength: 9,
+                          keyboardType: const TextInputType.numberWithOptions(
+                              signed: true, decimal: true),
+                          cursorColor: Colors.black,
+                          inputDecoration: InputDecoration(
+                            contentPadding:
+                                const EdgeInsets.only(bottom: 15, left: 0),
+                            border: InputBorder.none,
+                            hintText: 'Phone Number',
+                            hintStyle: TextStyle(
+                                color: Colors.grey.shade500, fontSize: 16),
+                          ),
+                          onSaved: (PhoneNumber number) {
+                            print('On Saved: $number');
+                          },
+                        ),
+                        Positioned(
+                          left: 90,
+                          top: 8,
+                          bottom: 8,
+                          child: Container(
+                            height: 40,
+                            width: 1,
+                            color: Colors.black.withOpacity(0.13),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
+                // TextFormField(
+                //   controller: controller,
+                // ),
                 const SizedBox(
                   height: 100,
                 ),
@@ -153,16 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: MaterialButton(
                     minWidth: double.infinity,
                     onPressed: () {
-                      setState(() {
-                        _isLoading = true;
-                      });
-                      repository.login(context, controller.text.trim());
-                      Future.delayed(const Duration(seconds: 2), () {
-                        setState(() {
-                          _isLoading = false;
-                        });
-                        // Navigator.push(context, MaterialPageRoute(builder: (context) => Verificatoin()));
-                      });
+                      login();
                     },
                     color: Colors.black,
                     shape: RoundedRectangleBorder(
