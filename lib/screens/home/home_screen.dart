@@ -4,6 +4,7 @@ import 'package:motion_tab_bar_v2/motion-badge.widget.dart';
 import 'package:quizu/data/share_const.dart';
 import 'package:quizu/screens/login/login_screen.dart';
 import 'package:quizu/screens/widgets/profile.dart';
+import 'package:quizu/screens/widgets/quiz.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -26,8 +27,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   tabbar() {
     return _tabController = TabController(
-      initialIndex: 1,
-      length: 4,
+      initialIndex: 0,
+      length: 3,
       vsync: this,
     );
   }
@@ -68,13 +69,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       bottomNavigationBar: MotionTabBar(
         initialSelectedTab: "Home",
         useSafeArea: true, // default: true, apply safe area wrapper
-        labels: const ["Dashboard", "Home", "Profile", "Settings"],
-        icons: const [
-          Icons.dashboard,
-          Icons.home,
-          Icons.people_alt,
-          Icons.settings
-        ],
+        labels: const ["Home", "Profile", "Settings"],
+        icons: const [Icons.home, Icons.people_alt, Icons.settings],
 
         tabSize: 50,
         tabBarHeight: 55,
@@ -102,12 +98,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         controller: _tabController,
         // ignore: prefer_const_literals_to_create_immutables
         children: <Widget>[
-          const Center(
-            child: Text("Dashboard"),
-          ),
-          const Center(
-            child: Text("Home"),
-          ),
+          const QuizApp(),
           const Profile(),
           const Center(
             child: Text("Settings"),
