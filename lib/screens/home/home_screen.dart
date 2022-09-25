@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
 import 'package:motion_tab_bar_v2/motion-badge.widget.dart';
+import 'package:quizu/const/colors.dart';
 import 'package:quizu/data/share_const.dart';
 import 'package:quizu/screens/login/login_screen.dart';
 import 'package:quizu/screens/widgets/profile.dart';
 import 'package:quizu/screens/widgets/quiz.dart';
+import 'package:quizu/screens/widgets/topscore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -63,9 +65,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          // title: Text(widget.title!),
-          ),
+      // appBar: AppBar(
+      //   // title: Text(widget.title!),
+      //   backgroundColor: d,
+      // ),
       bottomNavigationBar: MotionTabBar(
         initialSelectedTab: "Home",
         useSafeArea: true, // default: true, apply safe area wrapper
@@ -82,9 +85,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         tabIconColor: Colors.blue[600],
         tabIconSize: 28.0,
         tabIconSelectedSize: 26.0,
-        tabSelectedColor: Colors.blue[900],
+        tabSelectedColor: Colors.deepPurple[400],
         tabIconSelectedColor: Colors.white,
-        tabBarColor: Colors.white,
+        tabBarColor: Colors.deepPurple,
 
         onTabItemSelected: (int value) {
           setState(() {
@@ -100,9 +103,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         children: <Widget>[
           const QuizApp(),
           const Profile(),
-          const Center(
-            child: Text("Settings"),
-          ),
+          const TopScore(),
         ],
       ),
     );

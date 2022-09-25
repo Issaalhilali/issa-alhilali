@@ -4,4 +4,5 @@ class ApiCOnst {
   static const String loginUrl = '/Login';
   static const String name = '/Name';
   static const String infouser = '/UserInfo';
+  static const String topScore = '/TopScores';
 }

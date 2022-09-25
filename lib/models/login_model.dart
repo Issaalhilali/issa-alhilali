@@ -10,7 +10,7 @@ class CreateModel {
   CreateModel.fromJson(Map<String, dynamic> json) {
     sucess = json['sucess'];
     userStatus = json['user_status'] ?? "";
-    msg = json['msg'] ?? "";
+    msg = json['message'] ?? "";
     token = json['token'] ?? "";
   }
 
@@ -18,7 +18,7 @@ class CreateModel {
     final Map<String, dynamic> data = Map<String, dynamic>();
     data['sucess'] = sucess;
     data['user_status'] = userStatus;
-    data['msg'] = msg;
+    data['message'] = msg;
     data['token'] = token;
 
     return data;
@@ -74,7 +74,7 @@ class LoginMode {
 
   LoginMode.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    msg = json['msg'];
+    msg = json['message'];
     token = json['token'];
     name = json['name'];
     mobile = json['mobile'];

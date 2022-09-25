@@ -18,10 +18,6 @@ class Repository {
   login(BuildContext context, String phone) async {
     var pref = await SharedPreferences.getInstance();
     Map data = {"OTP": "0000", "mobile": phone};
-    // setHeaders() => {
-    //       'Content-type': 'application/json',
-    //       'Accept': 'application/json',
-    //     };
     final body = json.encode(data);
     final url = Uri.parse(ApiCOnst.baseUrl + ApiCOnst.loginUrl);
 
@@ -30,10 +26,9 @@ class Repository {
     try {
       // if (response.statusCode == 20) {
       final result = LoginMode.fromJson(jsonDecode(response.body));
+      final resultCeate = CreateModel.fromJson(jsonDecode(response.body));
       if (result.token != null) {
         pref.setString(ShareConst.shareToekn, result.token!);
-
-        // ignore: use_build_context_synchronously
         if (result.msg.toString() == "Token returning!") {
           // ignore: use_build_context_synchronously
           Navigator.pushAndRemoveUntil(
@@ -42,10 +37,7 @@ class Repository {
               (route) => false);
           // ignore: use_build_context_synchronously
           messagesnackbar(context, "Welcome", Colors.green);
-          print(result.name!);
-        } else {
-          // ignore: use_build_context_synchronously
-          final resultCeate = CreateModel.fromJson(jsonDecode(response.body));
+        } else if (resultCeate.msg == "user created!") {
           // ignore: use_build_context_synchronously
           Navigator.pushAndRemoveUntil(
               context,

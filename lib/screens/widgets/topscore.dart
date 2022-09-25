@@ -3,22 +3,25 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quizu/bloc/info/info_bloc.dart';
+import 'package:quizu/bloc/topscore/info_bloc.dart';
 
 import 'package:quizu/models/info_model.dart';
 import 'package:quizu/models/myscore.dart';
+import 'package:quizu/models/topmode.dart';
+import 'package:quizu/repository/api_services.dart';
 import 'package:quizu/repository/auth/auth.dart';
 import 'package:quizu/repository/sql/sql_score.dart';
 import 'package:quizu/screens/login/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Profile extends StatefulWidget {
-  const Profile({super.key});
+class TopScore extends StatefulWidget {
+  const TopScore({super.key});
 
   @override
-  State<Profile> createState() => _ProfileState();
+  State<TopScore> createState() => _TopScoreState();
 }
 
-class _ProfileState extends State<Profile> {
+class _TopScoreState extends State<TopScore> {
   String? token;
 
   @override
@@ -69,61 +72,32 @@ class _ProfileState extends State<Profile> {
   //   });
   // }
 
-  logout() async {
-    SharedPreferences.getInstance().then((value) {
-      setState(() {
-        value.remove('token').whenComplete(() {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const LoginScreen()),
-              (route) => false);
-        });
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          InfoBloc(RepositoryProvider.of<Repository>(context))..add(LoadInfo()),
+          TopBloc(RepositoryProvider.of<APIService>(context))..add(LoadTop()),
       child: Scaffold(
-        body: BlocBuilder<InfoBloc, InfoState>(
+        body: BlocBuilder<TopBloc, TopState>(
           builder: (context, state) {
             if (state is InfoLoadingState) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
             }
-            if (state is InfoLoadedState) {
-              InfoModel item = state.data;
+            if (state is TopLoadedState) {
+              List<TopModel> item = state.data;
               // Obtain shared preferences.
 
               return Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      children: [
-                        Container(),
-                        IconButton(
-                            onPressed: () {
-                              logout();
-                            },
-                            icon: const Icon(Icons.logout_sharp))
-                      ],
-                    ),
-                    Text(item.name!),
-                    Text(item.mobile!),
-                    SizedBox(
-                      height: 400,
-                      width: 150,
-                      child: buildListView(),
-                    ),
-                  ],
-                ),
-              );
+                  padding: const EdgeInsets.all(20.0),
+                  child: ListView.builder(
+                    itemCount: item.length,
+                    itemBuilder: (context, index) {
+                      var t = item[index];
+                      return Text(t.score.toString());
+                    },
+                  ));
             }
             if (state is InfoErrorState) {
               return Container();

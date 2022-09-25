@@ -1,11 +1,18 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:quizu/const/colors.dart';
 import 'package:quizu/const/images.dart';
 import 'package:quizu/const/text_style.dart';
+import 'package:quizu/models/myscore.dart';
 import 'package:quizu/repository/api_services.dart';
+import 'package:quizu/repository/sql/sql_score.dart';
+import 'package:quizu/screens/result/result_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({Key? key}) : super(key: key);
@@ -16,9 +23,11 @@ class QuizScreen extends StatefulWidget {
 
 class _QuizScreenState extends State<QuizScreen> {
   var currentQuestionIndex = 0;
+  List<MyScore> list = [];
   // int seconds = 60;
 
   Duration myDuration = const Duration(minutes: 2);
+  SharedPreferences? share;
 
   Timer? timer;
   late Future quiz;
@@ -40,9 +49,32 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   void initState() {
     super.initState();
-    quiz = getQuiz1();
+    initshared();
+    quiz = APIService.getQuiz1();
     // startTimer();
     startTimer1();
+  }
+
+  initshared() async {
+    share = await SharedPreferences.getInstance();
+  }
+
+  // void addScore(MyScore myScore) {
+  //   list.add(myScore);
+  //   savedata();
+  // }
+
+  void addItem(MyScore item) {
+    // Insert an item into the top of our list, on index zero
+    list.add(item);
+    saveData();
+  }
+
+  void saveData() {
+    List<String> stringList =
+        list.map((item) => jsonEncode(item.toJson())).toList();
+
+    share!.setStringList('list', stringList);
   }
 
   @override
@@ -70,6 +102,21 @@ class _QuizScreenState extends State<QuizScreen> {
       myDuration = const Duration(minutes: 2);
       timer!.cancel();
       startTimer1();
+    });
+  }
+
+  gotoNextReuslt() {
+    setState(() {
+      isLoaded = false;
+      // currentQuestionIndex++;
+      // resetColors();
+      seconds = 120;
+      myDuration = const Duration(minutes: 1);
+      // timer!.cancel();
+      startTimer1();
+
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const ResultScreen()));
     });
   }
 
@@ -102,7 +149,7 @@ class _QuizScreenState extends State<QuizScreen> {
       _isLoading = true;
     });
 
-    await updatescore(context, score);
+    await APIService.updatescore(context, score);
     setState(() {
       _isLoading = false;
     });
@@ -219,26 +266,43 @@ class _QuizScreenState extends State<QuizScreen> {
 
                                   return GestureDetector(
                                     onTap: () {
-                                      setState(() {
-                                        if (answer.toString() ==
-                                            optionsList[index].toString()[0]) {
-                                          optionsColor[index] = Colors.green;
-                                          points = points + 1;
-                                        } else {
-                                          optionsColor[index] = Colors.red;
-                                        }
+                                      if (currentQuestionIndex ==
+                                          data.length - 1) {
+                                        setState(() {
+                                          gotoNextReuslt();
+                                          ssndResult(points);
+                                          String now = DateFormat("yyyy-MM-dd")
+                                              .format(DateTime.now());
+                                          print(now);
+                                          SqliteService.createItem(MyScore(
+                                            score: points.toString(),
+                                            time: now.toString(),
+                                          ));
+                                          print(points);
+                                        });
+                                      } else {
+                                        setState(() {
+                                          if (answer.toString() ==
+                                              optionsList[index]
+                                                  .toString()[0]) {
+                                            optionsColor[index] = Colors.green;
+                                            points = points + 1;
+                                          } else {
+                                            optionsColor[index] = Colors.red;
+                                          }
 
-                                        if (currentQuestionIndex <
-                                            data.length - 1) {
-                                          Future.delayed(
-                                              const Duration(seconds: 1), () {
-                                            gotoNextQuestion();
-                                          });
-                                        } else {
-                                          timer!.cancel();
-                                          //here you can do whatever you want with the results
-                                        }
-                                      });
+                                          if (currentQuestionIndex <
+                                              data.length - 1) {
+                                            Future.delayed(
+                                                const Duration(seconds: 1), () {
+                                              gotoNextQuestion();
+                                            });
+                                          } else {
+                                            timer!.cancel();
+                                            //here you can do whatever you want with the results
+                                          }
+                                        });
+                                      }
                                     },
                                     child: Container(
                                       margin: const EdgeInsets.only(bottom: 20),
@@ -260,10 +324,19 @@ class _QuizScreenState extends State<QuizScreen> {
                               ),
                               _isLoading
                                   ? const CircularProgressIndicator()
-                                  : currentQuestionIndex == 29
+                                  : currentQuestionIndex == data.length - 1
                                       ? ElevatedButton(
                                           onPressed: () {
                                             ssndResult(points);
+                                            String now =
+                                                DateFormat("yyyy-MM-dd")
+                                                    .format(DateTime.now());
+                                            print(now);
+                                            SqliteService.createItem(MyScore(
+                                              score: points.toString(),
+                                              time: now.toString(),
+                                            ));
+                                            print(points);
                                           },
                                           style: ElevatedButton.styleFrom(
                                               primary: Colors.deepOrange,
@@ -309,4 +382,31 @@ class _QuizScreenState extends State<QuizScreen> {
                   },
                 ))));
   }
+
+  // Future<void> addToSP(List<MyScore> tList) async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   prefs.setString('graphLists', jsonEncode(tList));
+  // }
+
+  // List<MyScore> list = [];
+  // List scores = [];
+  // saveScore(score) {
+  //   List score = [];
+  // }
+
+  // addTodo(scc) async {
+  //   int id = Random().nextInt(30);
+
+  //   MyScore t = MyScore(id: id, score: scc);
+  //   // Todo returnTodo = await Navigator.push(
+  //   //     context, MaterialPageRoute(builder: (context) => TodoView(todo: t)));
+  //   if (t != null) {
+  //     setState(() {
+  //       scores.add(t);
+  //       print(t);
+  //     });
+  //     List item = scores.map((e) => e.toJson()).toList();
+  //     share!.setString("scors", jsonEncode(item));
+  //   }
+  // }
 }
