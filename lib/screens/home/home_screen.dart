@@ -65,22 +65,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   // title: Text(widget.title!),
-      //   backgroundColor: d,
-      // ),
       bottomNavigationBar: MotionTabBar(
         initialSelectedTab: "Home",
         useSafeArea: true, // default: true, apply safe area wrapper
-        labels: const ["Home", "Profile", "Settings"],
-        icons: const [Icons.home, Icons.people_alt, Icons.settings],
+        labels: const ["Home", "Top Scores", "Profile"],
+        icons: const [Icons.home, Icons.score, Icons.settings],
 
         tabSize: 50,
         tabBarHeight: 55,
         textStyle: const TextStyle(
           fontSize: 12,
-          color: Colors.black,
-          fontWeight: FontWeight.w500,
+          color: lightgrey,
+          fontWeight: FontWeight.bold,
+          fontFamily: "quick_semi",
         ),
         tabIconColor: Colors.blue[600],
         tabIconSize: 28.0,
@@ -102,8 +99,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         // ignore: prefer_const_literals_to_create_immutables
         children: <Widget>[
           const QuizApp(),
-          const Profile(),
           const TopScore(),
+          const Profile(),
         ],
       ),
     );

@@ -54,6 +54,7 @@ class Repository {
 
   //for complete name
   completeCreate(BuildContext context, String token, String name) async {
+    var pref = await SharedPreferences.getInstance();
     Map data = {"name": name};
 
     final body = json.encode(data);
@@ -64,7 +65,9 @@ class Repository {
     try {
       // if (response.statusCode == 20) {
       final result = NameMode.fromJson(jsonDecode(response.body));
+
       if (result.name != null) {
+        pref.setString('name', result.name!);
         // print(result.name);
         // ignore: use_build_context_synchronously
         Navigator.pushAndRemoveUntil(
