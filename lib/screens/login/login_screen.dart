@@ -1,10 +1,9 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:quizu/const/colors.dart';
 import 'package:quizu/const/padd.dart';
-import 'package:quizu/repository/auth/auth.dart';
+import 'package:quizu/screens/login/otp.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,7 +14,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController controller = TextEditingController();
-  Repository repository = Repository();
 
   bool _isLoading = false;
   @override
@@ -24,16 +22,21 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
   }
 
-  login() async {
-    setState(() {
-      _isLoading = true;
-    });
+  login() {
     if (controller.text.isNotEmpty) {
-      await repository.login(context, controller.text.trim());
       setState(() {
-        _isLoading = false;
+        _isLoading = true;
       });
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => OtpScreen(phone: controller.text)));
+    } else {
+      throw Exception('Empty');
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override

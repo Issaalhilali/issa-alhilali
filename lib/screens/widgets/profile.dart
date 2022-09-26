@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quizu/bloc/info/info_bloc.dart';
 import 'package:quizu/const/colors.dart';
+import 'package:quizu/const/padd.dart';
 
 import 'package:quizu/models/info_model.dart';
 import 'package:quizu/models/myscore.dart';
@@ -116,27 +117,36 @@ class _ProfileState extends State<Profile> {
 
                     return Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Row(
-                            children: [
-                              Container(),
-                              IconButton(
-                                  onPressed: () {
-                                    logout();
-                                  },
-                                  icon: const Icon(Icons.logout_sharp))
-                            ],
-                          ),
-                          Text(item.name!),
-                          Text(item.mobile!),
-                          SizedBox(
-                            height: 400,
-                            width: 150,
-                            child: buildListView(),
-                          ),
-                        ],
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Row(
+                              children: [
+                                Container(),
+                                IconButton(
+                                    onPressed: () {
+                                      logout();
+                                    },
+                                    icon: const Icon(Icons.logout_sharp))
+                              ],
+                            ),
+                            Text(item.name!),
+                            Text(item.mobile!),
+                            padd20,
+                            Divider(),
+                            SingleChildScrollView(
+                              child: Padding(
+                                padding: const EdgeInsets.all(15.0),
+                                child: SizedBox(
+                                  height: 500,
+                                  width: double.infinity,
+                                  child: buildListView(),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   }
@@ -178,14 +188,17 @@ class _ProfileState extends State<Profile> {
           return ListView.builder(
             itemCount: snapshot.data!.length,
             itemBuilder: (BuildContext context, int index) {
-              var item = snapshot.data![index];
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(item.id.toString()),
-                  Text(item.score.toString()),
-                  Text(item.time.toString()),
-                ],
+              var items = snapshot.data!
+                ..sort((a, b) => b.id!.compareTo(a.id!));
+              var item = items[index];
+              return SingleChildScrollView(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(item.score.toString()),
+                    Text(item.time.toString()),
+                  ],
+                ),
               );
             },
           );

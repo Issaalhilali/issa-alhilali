@@ -24,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState() {
     sharedata();
     tabbar();
+
     super.initState();
   }
 

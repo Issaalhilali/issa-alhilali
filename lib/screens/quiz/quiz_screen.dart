@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:quizu/const/colors.dart';
 import 'package:quizu/const/images.dart';
 import 'package:quizu/const/text_style.dart';
@@ -24,13 +25,14 @@ class QuizScreen extends StatefulWidget {
 class _QuizScreenState extends State<QuizScreen> {
   var currentQuestionIndex = 0;
   List<MyScore> list = [];
+  String? token;
   // int seconds = 60;
 
   Duration myDuration = const Duration(minutes: 2);
   SharedPreferences? share;
 
   Timer? timer;
-  late Future quiz;
+  // late Future quiz;
 
   int points = 0;
 
@@ -48,21 +50,22 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   void initState() {
+    fecthData();
     super.initState();
-    initshared();
-    quiz = APIService.getQuiz1();
-    // startTimer();
+    // initshared();
+    // quiz = APIService.getQuiz1(token!);
+
     startTimer1();
   }
 
-  initshared() async {
-    share = await SharedPreferences.getInstance();
+  fecthData() async {
+    SharedPreferences.getInstance().then((share) {
+      setState(() {
+        token = share.getString('token');
+        // name = share.getString('name');
+      });
+    });
   }
-
-  // void addScore(MyScore myScore) {
-  //   list.add(myScore);
-  //   savedata();
-  // }
 
   void addItem(MyScore item) {
     // Insert an item into the top of our list, on index zero
@@ -99,7 +102,7 @@ class _QuizScreenState extends State<QuizScreen> {
       currentQuestionIndex++;
       resetColors();
       seconds = 120;
-      myDuration = const Duration(minutes: 2);
+      myDuration = const Duration(minutes: 1);
       timer!.cancel();
       startTimer1();
     });
@@ -149,7 +152,7 @@ class _QuizScreenState extends State<QuizScreen> {
       _isLoading = true;
     });
 
-    await APIService.updatescore(context, score);
+    await APIService.updatescore(context, score, token!);
     setState(() {
       _isLoading = false;
     });
@@ -176,7 +179,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   colors: [purple, deepPurple],
                 )),
                 child: FutureBuilder(
-                  future: quiz,
+                  future: APIService.getQuiz1(token!),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
                       var data = snapshot.data;
@@ -242,7 +245,8 @@ class _QuizScreenState extends State<QuizScreen> {
                                 ],
                               ),
                               const SizedBox(height: 20),
-                              Image.asset(ideas, width: 200, height: 150),
+                              Lottie.asset(ideas,
+                                  width: 145, height: 150, fit: BoxFit.fill),
                               const SizedBox(height: 20),
                               Align(
                                   alignment: Alignment.centerLeft,
@@ -261,6 +265,9 @@ class _QuizScreenState extends State<QuizScreen> {
                                 shrinkWrap: true,
                                 itemCount: optionsList.length,
                                 itemBuilder: (BuildContext context, int index) {
+                                  var list = optionsList
+                                    ..sort((a, b) => a.compareTo(b));
+                                  var ite = list[index];
                                   var answer =
                                       data[currentQuestionIndex]['correct'];
 
@@ -271,7 +278,8 @@ class _QuizScreenState extends State<QuizScreen> {
                                         setState(() {
                                           gotoNextReuslt();
                                           ssndResult(points);
-                                          String now = DateFormat("yyyy-MM-dd")
+                                          String now = DateFormat(
+                                                  "hh:mm:ss a yyyy-MM-dd")
                                               .format(DateTime.now());
                                           print(now);
                                           SqliteService.createItem(MyScore(
@@ -283,8 +291,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                       } else {
                                         setState(() {
                                           if (answer.toString() ==
-                                              optionsList[index]
-                                                  .toString()[0]) {
+                                              ite.toString()[0]) {
                                             optionsColor[index] = Colors.green;
                                             points = points + 1;
                                           } else {

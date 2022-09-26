@@ -43,6 +43,8 @@ dependencies:
   motion_tab_bar_v2: ^0.2.3
   shared_preferences: ^2.0.15
   sqflite: ^2.1.0
+  phone_number: ^1.0.0
+  pin_code_fields: ^7.4.0
 
 dev_dependencies:
   flutter_lints: ^2.0.0

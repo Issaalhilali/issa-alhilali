@@ -22,13 +22,12 @@ class APIService {
     }
   }
 
-  static Future getQuiz1() async {
+  static Future getQuiz1(String token) async {
     // List<QuizModel> result = [];
     setHeadersToken() => {
           'Content-type': 'application/json',
           'Accept': 'application/json',
-          'Authorization':
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNjYzMzU4NDY1fQ.LlVAcArd2Bn3gtdanoHlfMOsHn0gRMqvVHozUk4bjWM'
+          'Authorization': 'Bearer $token'
         };
     var res = await http.get(Uri.parse(lisn1), headers: setHeadersToken());
 
@@ -46,15 +45,14 @@ class APIService {
     }
   }
 
-  static Future updatescore(BuildContext context, score) async {
-    Map data = {"score": 200};
+  static Future updatescore(BuildContext context, score, String token) async {
+    Map data = {"score": score};
 
     var body = json.encode(data);
     setHeadersToken() => {
           'Content-type': 'application/json',
           'Accept': 'application/json',
-          'Authorization':
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjk4LCJpYXQiOjE2NjM4OTQwOTN9.ZhsnQEEJKtSgW9br-r6t6MNOEDzxr1yy2kXfhq2kREc'
+          'Authorization': 'Bearer $token'
         };
     var res = await http.post(Uri.parse(urlscore),
         body: body, headers: setHeadersToken());

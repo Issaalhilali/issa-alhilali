@@ -44,6 +44,7 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         title: 'QuizU',
         color: deepPurple,
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
