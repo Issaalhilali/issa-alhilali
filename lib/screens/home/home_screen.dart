@@ -70,7 +70,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         initialSelectedTab: "Home",
         useSafeArea: true, // default: true, apply safe area wrapper
         labels: const ["Home", "Top Scores", "Profile"],
-        icons: const [Icons.home, Icons.score, Icons.settings],
+        icons: const [
+          Icons.home,
+          Icons.arrow_circle_down_sharp,
+          Icons.settings
+        ],
 
         tabSize: 50,
         tabBarHeight: 55,

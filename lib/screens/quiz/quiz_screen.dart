@@ -34,7 +34,7 @@ class _QuizScreenState extends State<QuizScreen> {
   Timer? timer;
   // late Future quiz;
 
-  int points = 0;
+  int points = 1;
 
   var isLoaded = false;
 
@@ -102,7 +102,7 @@ class _QuizScreenState extends State<QuizScreen> {
       currentQuestionIndex++;
       resetColors();
       seconds = 120;
-      myDuration = const Duration(minutes: 1);
+      myDuration = const Duration(minutes: 2);
       timer!.cancel();
       startTimer1();
     });
@@ -167,6 +167,7 @@ class _QuizScreenState extends State<QuizScreen> {
     final second = strDigits(myDuration.inSeconds.remainder(60));
 
     return Scaffold(
+        backgroundColor: purple,
         body: SafeArea(
             child: Container(
                 width: double.infinity,
@@ -198,185 +199,204 @@ class _QuizScreenState extends State<QuizScreen> {
                       return SingleChildScrollView(
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(50),
-                                      border: Border.all(
-                                          color: lightgrey, width: 2),
-                                    ),
-                                    child: IconButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        icon: const Icon(
-                                          CupertinoIcons.xmark,
-                                          color: Colors.white,
-                                          size: 28,
-                                        )),
-                                  ),
-                                  Stack(
-                                    alignment: Alignment.center,
-                                    children: [
-                                      normalText(
-                                          color: seconds <= 30
-                                              ? Colors.red
-                                              : Colors.green,
-                                          size: 24,
-                                          text: "$minutes:$second"),
-                                      SizedBox(
-                                        width: 80,
-                                        height: 80,
-                                        child: CircularProgressIndicator(
-                                          value: seconds / 120,
-                                          valueColor: AlwaysStoppedAnimation(
-                                              seconds <= 30
-                                                  ? Colors.red
-                                                  : Colors.white),
+                          child: data != null
+                              ? Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                            border: Border.all(
+                                                color: lightgrey, width: 2),
+                                          ),
+                                          child: IconButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              icon: const Icon(
+                                                CupertinoIcons.xmark,
+                                                color: Colors.white,
+                                                size: 28,
+                                              )),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 20),
-                              Lottie.asset(ideas,
-                                  width: 145, height: 150, fit: BoxFit.fill),
-                              const SizedBox(height: 20),
-                              Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: normalText(
-                                      color: lightgrey,
-                                      size: 18,
-                                      text:
-                                          "Question ${currentQuestionIndex + 1} of ${data.length}")),
-                              const SizedBox(height: 20),
-                              normalText(
-                                  color: Colors.white,
-                                  size: 20,
-                                  text: data[currentQuestionIndex]['Question']),
-                              const SizedBox(height: 20),
-                              ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: optionsList.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  var list = optionsList
-                                    ..sort((a, b) => a.compareTo(b));
-                                  var ite = list[index];
-                                  var answer =
-                                      data[currentQuestionIndex]['correct'];
-
-                                  return GestureDetector(
-                                    onTap: () {
-                                      if (currentQuestionIndex ==
-                                          data.length - 1) {
-                                        setState(() {
-                                          gotoNextReuslt();
-                                          ssndResult(points);
-                                          String now = DateFormat(
-                                                  "hh:mm:ss a yyyy-MM-dd")
-                                              .format(DateTime.now());
-                                          print(now);
-                                          SqliteService.createItem(MyScore(
-                                            score: points.toString(),
-                                            time: now.toString(),
-                                          ));
-                                          print(points);
-                                        });
-                                      } else {
-                                        setState(() {
-                                          if (answer.toString() ==
-                                              ite.toString()[0]) {
-                                            optionsColor[index] = Colors.green;
-                                            points = points + 1;
-                                          } else {
-                                            optionsColor[index] = Colors.red;
-                                          }
-
-                                          if (currentQuestionIndex <
-                                              data.length - 1) {
-                                            Future.delayed(
-                                                const Duration(seconds: 1), () {
-                                              gotoNextQuestion();
-                                            });
-                                          } else {
-                                            timer!.cancel();
-                                            //here you can do whatever you want with the results
-                                          }
-                                        });
-                                      }
-                                    },
-                                    child: Container(
-                                      margin: const EdgeInsets.only(bottom: 20),
-                                      alignment: Alignment.center,
-                                      width: size.width - 100,
-                                      padding: const EdgeInsets.all(16),
-                                      decoration: BoxDecoration(
-                                        color: optionsColor[index],
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: headingText(
-                                        color: purple,
-                                        size: 18,
-                                        text: optionsList[index].toString(),
-                                      ),
+                                        Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            normalText(
+                                                color: seconds <= 30
+                                                    ? Colors.red
+                                                    : Colors.green,
+                                                size: 24,
+                                                text: "$minutes:$second"),
+                                            SizedBox(
+                                              width: 80,
+                                              height: 80,
+                                              child: CircularProgressIndicator(
+                                                value: seconds / 120,
+                                                valueColor:
+                                                    AlwaysStoppedAnimation(
+                                                        seconds <= 30
+                                                            ? Colors.red
+                                                            : Colors.white),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                  );
-                                },
-                              ),
-                              _isLoading
-                                  ? const CircularProgressIndicator()
-                                  : currentQuestionIndex == data.length - 1
-                                      ? ElevatedButton(
-                                          onPressed: () {
-                                            ssndResult(points);
-                                            String now =
-                                                DateFormat("yyyy-MM-dd")
+                                    const SizedBox(height: 20),
+                                    Lottie.asset(ideas,
+                                        width: 145,
+                                        height: 150,
+                                        fit: BoxFit.fill),
+                                    const SizedBox(height: 20),
+                                    Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: normalText(
+                                            color: lightgrey,
+                                            size: 18,
+                                            text:
+                                                "Question ${currentQuestionIndex + 1} of ${data.length}")),
+                                    const SizedBox(height: 20),
+                                    normalText(
+                                        color: Colors.white,
+                                        size: 20,
+                                        text: data[currentQuestionIndex]
+                                            ['Question']),
+                                    const SizedBox(height: 20),
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: optionsList.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        var list = optionsList
+                                          ..sort((a, b) => a.compareTo(b));
+                                        var ite = list[index];
+                                        var answer = data[currentQuestionIndex]
+                                            ['correct'];
+
+                                        return GestureDetector(
+                                          onTap: () {
+                                            if (currentQuestionIndex ==
+                                                data.length - 1) {
+                                              setState(() {
+                                                gotoNextReuslt();
+                                                ssndResult(points);
+                                                String now = DateFormat(
+                                                        "hh:mm:ss a yyyy-MM-dd")
                                                     .format(DateTime.now());
-                                            print(now);
-                                            SqliteService.createItem(MyScore(
-                                              score: points.toString(),
-                                              time: now.toString(),
-                                            ));
-                                            print(points);
+                                                print(now);
+                                                SqliteService.createItem(
+                                                    MyScore(
+                                                  score: points.toString(),
+                                                  time: now.toString(),
+                                                ));
+                                                print(points);
+                                              });
+                                            } else {
+                                              setState(() {
+                                                if (answer.toString() ==
+                                                    ite.toString()[0]) {
+                                                  optionsColor[index] =
+                                                      Colors.green;
+                                                  points = points + 1;
+                                                } else {
+                                                  optionsColor[index] =
+                                                      Colors.red;
+                                                }
+
+                                                if (currentQuestionIndex <
+                                                    data.length - 1) {
+                                                  Future.delayed(
+                                                      const Duration(
+                                                          seconds: 1), () {
+                                                    gotoNextQuestion();
+                                                  });
+                                                } else {
+                                                  timer!.cancel();
+                                                  //here you can do whatever you want with the results
+                                                }
+                                              });
+                                            }
                                           },
-                                          style: ElevatedButton.styleFrom(
-                                              primary: Colors.deepOrange,
-                                              elevation: 0,
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          18.0)),
-                                              minimumSize:
-                                                  Size(size.width / 0.2, 50)),
-                                          child: const Text(
-                                            'show Result',
-                                            style: TextStyle(
-                                              fontFamily: "quick_bold",
-                                              fontSize: 18,
-                                              color: Colors.grey,
+                                          child: Container(
+                                            margin: const EdgeInsets.only(
+                                                bottom: 20),
+                                            alignment: Alignment.center,
+                                            width: size.width - 100,
+                                            padding: const EdgeInsets.all(16),
+                                            decoration: BoxDecoration(
+                                              color: optionsColor[index],
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
                                             ),
-                                          ))
-                                      : TextButton(
-                                          onPressed: () {
-                                            gotoNextQuestion();
-                                          },
-                                          child: const Text(
-                                            'Skip',
-                                            style: TextStyle(
-                                              fontFamily: "quick_bold",
-                                              fontSize: 18,
-                                              color: Colors.grey,
+                                            child: headingText(
+                                              color: purple,
+                                              size: 18,
+                                              text:
+                                                  optionsList[index].toString(),
                                             ),
-                                          )),
-                              const SizedBox(height: 30),
-                            ],
-                          ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    _isLoading
+                                        ? const CircularProgressIndicator()
+                                        : currentQuestionIndex ==
+                                                data.length - 1
+                                            ? ElevatedButton(
+                                                onPressed: () {
+                                                  ssndResult(points);
+                                                  String now = DateFormat(
+                                                          "yyyy-MM-dd")
+                                                      .format(DateTime.now());
+                                                  print(now);
+                                                  SqliteService.createItem(
+                                                      MyScore(
+                                                    score: points.toString(),
+                                                    time: now.toString(),
+                                                  ));
+                                                  print(points);
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                    primary: Colors.deepOrange,
+                                                    elevation: 0,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        18.0)),
+                                                    minimumSize: Size(
+                                                        size.width / 0.2, 50)),
+                                                child: const Text(
+                                                  'show Result',
+                                                  style: TextStyle(
+                                                    fontFamily: "quick_bold",
+                                                    fontSize: 18,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ))
+                                            : TextButton(
+                                                onPressed: () {
+                                                  gotoNextQuestion();
+                                                },
+                                                child: const Text(
+                                                  'Skip',
+                                                  style: TextStyle(
+                                                    fontFamily: "quick_bold",
+                                                    fontSize: 18,
+                                                    color: Colors.grey,
+                                                  ),
+                                                )),
+                                    const SizedBox(height: 30),
+                                  ],
+                                )
+                              : Container(),
                         ),
                       );
                     } else {

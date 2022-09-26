@@ -61,7 +61,7 @@ class _QuizAppState extends State<QuizApp> {
                   width: 200,
                 ),
               ),
-              const SizedBox(height: 20),
+              padd20,
               normalText(color: lightgrey, size: 18, text: "Welcome to our"),
               headingText(color: Colors.white, size: 32, text: "Quiz"),
               const SizedBox(height: 20),

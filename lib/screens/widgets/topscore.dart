@@ -2,9 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:quizu/bloc/info/info_bloc.dart';
 import 'package:quizu/bloc/topscore/info_bloc.dart';
 import 'package:quizu/const/colors.dart';
+import 'package:quizu/const/images.dart';
+import 'package:quizu/const/padd.dart';
+import 'package:quizu/const/text_style.dart';
 
 import 'package:quizu/models/info_model.dart';
 import 'package:quizu/models/myscore.dart';
@@ -75,6 +79,7 @@ class _TopScoreState extends State<TopScore> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return BlocProvider(
         create: (context) =>
             TopBloc(RepositoryProvider.of<APIService>(context))..add(LoadTop()),
@@ -103,13 +108,55 @@ class _TopScoreState extends State<TopScore> {
                     // Obtain shared preferences.
 
                     return Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: ListView.builder(
-                          itemCount: item.length,
-                          itemBuilder: (context, index) {
-                            var t = item[index];
-                            return Text(t.score.toString());
-                          },
+                        padding: const EdgeInsets.all(6.0),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            // crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              padd20,
+                              Lottie.asset(goldrcron,
+                                  height: 160, width: 170, fit: BoxFit.fill),
+                              Row(
+                                children: [
+                                  headingText(
+                                      text: 'Top Scores',
+                                      color: lightgrey,
+                                      size: 18),
+                                ],
+                              ),
+                              Divider(color: Colors.orange),
+                              SizedBox(
+                                height: size.height - 150,
+                                width: size.width,
+                                child: ListView.builder(
+                                  itemCount: item.length,
+                                  itemBuilder: (context, index) {
+                                    var t = item[index];
+                                    return Column(
+                                      children: [
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            normalText(
+                                                text: t.name.toString(),
+                                                color: lightgrey),
+                                            normalText(
+                                                text: t.score.toString(),
+                                                color: Colors.yellow),
+                                          ],
+                                        ),
+                                        padd5,
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ));
                   }
                   if (state is InfoErrorState) {
