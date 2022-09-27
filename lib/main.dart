@@ -6,7 +6,6 @@ import 'package:quizu/repository/api_services.dart';
 import 'package:quizu/repository/auth/auth.dart';
 import 'package:quizu/repository/sql/sql_score.dart';
 import 'package:quizu/screens/home/home_screen.dart';
-import 'package:quizu/screens/login/complete.dart';
 import 'package:quizu/screens/login/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

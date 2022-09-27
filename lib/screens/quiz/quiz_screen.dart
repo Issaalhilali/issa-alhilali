@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +33,7 @@ class _QuizScreenState extends State<QuizScreen> {
   Timer? timer;
   // late Future quiz;
 
-  int points = 1;
+  int points = 0;
 
   var isLoaded = false;
 
@@ -113,13 +112,11 @@ class _QuizScreenState extends State<QuizScreen> {
       isLoaded = false;
       // currentQuestionIndex++;
       // resetColors();
-      seconds = 120;
-      myDuration = const Duration(minutes: 1);
+      // seconds = 120;
+      // myDuration = const Duration(minutes: 2);
       // timer!.cancel();
       startTimer1();
-
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const ResultScreen()));
+      _showMyDialog();
     });
   }
 
@@ -289,13 +286,12 @@ class _QuizScreenState extends State<QuizScreen> {
                                                 String now = DateFormat(
                                                         "hh:mm:ss a yyyy-MM-dd")
                                                     .format(DateTime.now());
-                                                print(now);
+
                                                 SqliteService.createItem(
                                                     MyScore(
                                                   score: points.toString(),
                                                   time: now.toString(),
                                                 ));
-                                                print(points);
                                               });
                                             } else {
                                               setState(() {
@@ -350,20 +346,11 @@ class _QuizScreenState extends State<QuizScreen> {
                                                 data.length - 1
                                             ? ElevatedButton(
                                                 onPressed: () {
-                                                  ssndResult(points);
-                                                  String now = DateFormat(
-                                                          "yyyy-MM-dd")
-                                                      .format(DateTime.now());
-                                                  print(now);
-                                                  SqliteService.createItem(
-                                                      MyScore(
-                                                    score: points.toString(),
-                                                    time: now.toString(),
-                                                  ));
-                                                  print(points);
+                                                  _showMyDialog();
                                                 },
                                                 style: ElevatedButton.styleFrom(
-                                                    primary: Colors.deepOrange,
+                                                    backgroundColor:
+                                                        Colors.deepOrange,
                                                     elevation: 0,
                                                     shape:
                                                         RoundedRectangleBorder(
@@ -410,30 +397,56 @@ class _QuizScreenState extends State<QuizScreen> {
                 ))));
   }
 
-  // Future<void> addToSP(List<MyScore> tList) async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   prefs.setString('graphLists', jsonEncode(tList));
-  // }
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      // user must tap button!
 
-  // List<MyScore> list = [];
-  // List scores = [];
-  // saveScore(score) {
-  //   List score = [];
-  // }
-
-  // addTodo(scc) async {
-  //   int id = Random().nextInt(30);
-
-  //   MyScore t = MyScore(id: id, score: scc);
-  //   // Todo returnTodo = await Navigator.push(
-  //   //     context, MaterialPageRoute(builder: (context) => TodoView(todo: t)));
-  //   if (t != null) {
-  //     setState(() {
-  //       scores.add(t);
-  //       print(t);
-  //     });
-  //     List item = scores.map((e) => e.toJson()).toList();
-  //     share!.setString("scors", jsonEncode(item));
-  //   }
-  // }
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white.withOpacity(0.8),
+          contentPadding: const EdgeInsets.all(12.0),
+          title: normalText(text: 'Finish quiz'),
+          elevation: 0,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+          content: const SingleChildScrollView(
+            child: Text('A result will be displayed after the finish quiz'),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: purple,
+                elevation: 0,
+              ),
+              child: normalText(
+                  text: 'Show Result', size: 14, color: Colors.green),
+              onPressed: () {
+                ssndResult(points).whenComplete(() {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ResultScreen(points: points),
+                      ));
+                });
+                String now =
+                    DateFormat("hh:mm:ss a yyyy-MM-dd").format(DateTime.now());
+                SqliteService.createItem(MyScore(
+                  score: points.toString(),
+                  time: now.toString(),
+                ));
+              },
+            ),
+            TextButton(
+              child: const Text('cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

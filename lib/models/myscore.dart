@@ -16,7 +16,7 @@ class MyScore {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = score;
     data['score'] = score;
     data['time'] = time;

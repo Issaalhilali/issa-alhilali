@@ -1,10 +1,11 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:quizu/bloc/info/info_bloc.dart';
 import 'package:quizu/const/colors.dart';
+import 'package:quizu/const/images.dart';
 import 'package:quizu/const/padd.dart';
+import 'package:quizu/const/text_style.dart';
 
 import 'package:quizu/models/info_model.dart';
 import 'package:quizu/models/myscore.dart';
@@ -31,29 +32,15 @@ class _ProfileState extends State<Profile> {
   }
 
   List<MyScore> sco = [];
-  void _refreshNotes() async {
-    final data = await SqliteService.getItems();
-    setState(() {
-      sco = data;
-    });
-  }
+  // void _refreshNotes() async {
+  //   final data = await SqliteService.getItems();
+  //   setState(() {
+  //     sco = data;
+  //   });
+  // }
 
   SharedPreferences? prefs;
   List<MyScore> list = [];
-
-  // initshared() async {
-  //   prefs = await SharedPreferences.getInstance();
-  //   localdata();
-  // }
-
-  // localdata() {
-  //   // List<String> scor?? = list.map((e) => MyScore.fromJson(e)).toList()
-  //   List<String> scor = prefs!.getStringList('list')!;
-
-  //   setState(() {
-  //     list = scor.map((e) => MyScore.fromJson(json.decode(e))).toList();
-  //   });
-  // }
 
   sharedata() async {
     SharedPreferences.getInstance().then((value) {
@@ -62,14 +49,6 @@ class _ProfileState extends State<Profile> {
       });
     });
   }
-
-  // List<String>? items = [];
-  // getSP() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     items = prefs.getStringList('myList');
-  //   });
-  // }
 
   logout() async {
     SharedPreferences.getInstance().then((value) {
@@ -120,42 +99,54 @@ class _ProfileState extends State<Profile> {
                       child: SingleChildScrollView(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Container(),
                                 IconButton(
                                     onPressed: () {
                                       logout();
                                     },
-                                    icon: const Icon(Icons.logout_sharp))
+                                    icon: const Icon(
+                                      Icons.logout_sharp,
+                                      color: Colors.yellow,
+                                    )),
                               ],
                             ),
-                            Text(item.name!),
-                            Text(item.mobile!),
-                            padd20,
-                            Divider(),
-                            SingleChildScrollView(
-                              child: Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: SizedBox(
-                                  height: 500,
-                                  width: double.infinity,
-                                  child: buildListView(),
-                                ),
-                              ),
-                            ),
+                            normalText(
+                                text: item.name, size: 24, color: lightgrey),
+                            normalText(
+                                text: item.mobile, size: 24, color: lightgrey),
+                            // padd14,
+                            buildListView(),
                           ],
                         ),
                       ),
                     );
                   }
                   if (state is InfoErrorState) {
-                    return Container();
+                    return Container(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            const Text('Somthing error please try again later'),
+                            const SizedBox(height: 15.0),
+                            TextButton(
+                                onPressed: () {
+                                  context.read<InfoBloc>().add(LoadInfo());
+                                },
+                                child: const Text('try again'))
+                          ],
+                        ),
+                      ),
+                    );
                   }
                   return Container(
                     padding: const EdgeInsets.all(30.0),
-                    margin: const EdgeInsets.only(top: 200, bottom: 30),
                     child: Center(
                       child: Column(
                         children: [
@@ -163,7 +154,7 @@ class _ProfileState extends State<Profile> {
                           const SizedBox(height: 15.0),
                           TextButton(
                               onPressed: () {
-                                // context.read<InfoBloc>().add(LoadInfo());
+                                context.read<InfoBloc>().add(LoadInfo());
                               },
                               child: const Text('try again'))
                         ],
@@ -179,28 +170,59 @@ class _ProfileState extends State<Profile> {
 
   // subtitle: Text("Intermediate", style: TextStyle(color: Colors.white)),
   Widget buildListView() {
+    var size = MediaQuery.of(context).size;
     return FutureBuilder<List<MyScore>>(
         future: SqliteService.getItems(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const CircularProgressIndicator();
           }
-          return ListView.builder(
-            itemCount: snapshot.data!.length,
-            itemBuilder: (BuildContext context, int index) {
-              var items = snapshot.data!
-                ..sort((a, b) => b.id!.compareTo(a.id!));
-              var item = items[index];
-              return SingleChildScrollView(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(item.score.toString()),
-                    Text(item.time.toString()),
-                  ],
-                ),
-              );
-            },
+          return SingleChildScrollView(
+            child: Column(mainAxisAlignment: MainAxisAlignment.start,
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  padd20,
+                  Lottie.asset(goldrcron,
+                      height: 160, width: 170, fit: BoxFit.fill),
+                  Row(
+                    children: [
+                      headingText(
+                          text: 'My Scores', color: lightgrey, size: 18),
+                    ],
+                  ),
+                  const Divider(color: Colors.orange),
+                  SizedBox(
+                      height: size.height - 150,
+                      width: size.width,
+                      child: ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          // var items = snapshot.data!
+                          //   ..sort((a, b) => b.id!.compareTo(a.id!));
+                          var item = snapshot.data![index];
+                          return SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    normalText(
+                                        text: item.score.toString(),
+                                        color: lightgrey),
+                                    normalText(
+                                        text: item.time.toString(),
+                                        color: Colors.yellow),
+                                  ],
+                                ),
+                                padd5,
+                              ],
+                            ),
+                          );
+                        },
+                      ))
+                ]),
           );
         });
   }

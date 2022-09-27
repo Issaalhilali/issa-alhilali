@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:quizu/const/colors.dart';
 import 'package:quizu/const/padd.dart';
 import 'package:quizu/repository/auth/auth.dart';

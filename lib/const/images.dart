@@ -7,3 +7,5 @@ const String logoquiz = "${base}crow1.json";
 const String crown = "${base}crown-avatar-frame.json";
 const String crow1 = "${base}logoquiz.json";
 const String goldrcron = "${base}premium-gold.json";
+const String finish = "${base}finish.json";
+const String quiz = "${base}quiz.png";

@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
-import 'package:motion_tab_bar_v2/motion-badge.widget.dart';
 import 'package:quizu/const/colors.dart';
-import 'package:quizu/data/share_const.dart';
 import 'package:quizu/screens/login/login_screen.dart';
 import 'package:quizu/screens/widgets/profile.dart';
 import 'package:quizu/screens/widgets/quiz.dart';
 import 'package:quizu/screens/widgets/topscore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unicons/unicons.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomeScreenState createState() => _HomeScreenState();
 }
 
@@ -71,9 +71,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         useSafeArea: true, // default: true, apply safe area wrapper
         labels: const ["Home", "Top Scores", "Profile"],
         icons: const [
-          Icons.home,
-          Icons.arrow_circle_down_sharp,
-          Icons.settings
+          UniconsLine.home,
+          UniconsLine.gold,
+          UniconsLine.user_circle
         ],
 
         tabSize: 50,
@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           fontWeight: FontWeight.bold,
           fontFamily: "quick_semi",
         ),
-        tabIconColor: Colors.blue[600],
+        tabIconColor: Colors.yellow,
         tabIconSize: 28.0,
         tabIconSelectedSize: 26.0,
         tabSelectedColor: Colors.deepPurple[400],

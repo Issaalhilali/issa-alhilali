@@ -1,4 +1,4 @@
-part of 'info_bloc.dart';
+part of 'top_bloc.dart';
 
 @immutable
 abstract class TopEvent extends Equatable {

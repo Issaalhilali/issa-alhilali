@@ -1,22 +1,16 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
-import 'package:quizu/bloc/info/info_bloc.dart';
-import 'package:quizu/bloc/topscore/info_bloc.dart';
+import 'package:quizu/bloc/topscore/top_bloc.dart';
 import 'package:quizu/const/colors.dart';
 import 'package:quizu/const/images.dart';
 import 'package:quizu/const/padd.dart';
 import 'package:quizu/const/text_style.dart';
 
-import 'package:quizu/models/info_model.dart';
 import 'package:quizu/models/myscore.dart';
 import 'package:quizu/models/topmode.dart';
 import 'package:quizu/repository/api_services.dart';
-import 'package:quizu/repository/auth/auth.dart';
 import 'package:quizu/repository/sql/sql_score.dart';
-import 'package:quizu/screens/login/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TopScore extends StatefulWidget {
@@ -37,12 +31,12 @@ class _TopScoreState extends State<TopScore> {
   }
 
   List<MyScore> sco = [];
-  void _refreshNotes() async {
-    final data = await SqliteService.getItems();
-    setState(() {
-      sco = data;
-    });
-  }
+  // void _refreshNotes() async {
+  //   final data = await SqliteService.getItems();
+  //   setState(() {
+  //     sco = data;
+  //   });
+  // }
 
   SharedPreferences? prefs;
   List<MyScore> list = [];
@@ -125,7 +119,7 @@ class _TopScoreState extends State<TopScore> {
                                       size: 18),
                                 ],
                               ),
-                              Divider(color: Colors.orange),
+                              const Divider(color: Colors.orange),
                               SizedBox(
                                 height: size.height - 150,
                                 width: size.width,
@@ -159,8 +153,24 @@ class _TopScoreState extends State<TopScore> {
                           ),
                         ));
                   }
-                  if (state is InfoErrorState) {
-                    return Container();
+                  if (state is TopErrorState) {
+                    return Container(
+                      padding: const EdgeInsets.all(30.0),
+                      margin: const EdgeInsets.only(top: 200, bottom: 30),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            const Text('Somthing error please try again later'),
+                            const SizedBox(height: 15.0),
+                            TextButton(
+                                onPressed: () {
+                                  context.read<TopBloc>().add(LoadTop());
+                                },
+                                child: const Text('try again'))
+                          ],
+                        ),
+                      ),
+                    );
                   }
                   return Container(
                     padding: const EdgeInsets.all(30.0),
@@ -172,7 +182,7 @@ class _TopScoreState extends State<TopScore> {
                           const SizedBox(height: 15.0),
                           TextButton(
                               onPressed: () {
-                                // context.read<InfoBloc>().add(LoadInfo());
+                                context.read<TopBloc>().add(LoadTop());
                               },
                               child: const Text('try again'))
                         ],

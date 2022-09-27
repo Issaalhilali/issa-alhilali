@@ -17,7 +17,7 @@ class APIService {
     var res = await http.get(Uri.parse(link));
     if (res.statusCode == 200) {
       var data = jsonDecode(res.body.toString());
-      print("data is loaded");
+
       return data;
     }
   }
@@ -59,8 +59,7 @@ class APIService {
 
     try {
       var result = ResultModel.fromJson(jsonDecode(res.body));
-      print(result.message);
-      // print("data is loaded");
+
       if (result.success != null) {
         // Navigator.push(
         // context, MaterialPageRoute(builder: (context) => RsultScreen()));

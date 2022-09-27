@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:quizu/const/global.dart';
 import 'package:quizu/data/api_const.dart';
 import 'package:quizu/data/share_const.dart';
 import 'package:quizu/models/info_model.dart';
@@ -10,8 +11,6 @@ import 'package:quizu/models/result_model.dart';
 import 'package:quizu/repository/const.dart';
 import 'package:quizu/screens/home/home_screen.dart';
 import 'package:quizu/screens/login/complete.dart';
-import 'package:quizu/screens/otp/otp_screen.dart';
-import 'package:quizu/utli/global.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Repository {
@@ -109,8 +108,7 @@ class Repository {
     try {
       // if (response.statusCode == 200) {
       final result = InfoModel.fromJson(jsonDecode(response.body));
-      print(result.name);
-      print(result.mobile);
+
       return result;
       // }
     } catch (e) {

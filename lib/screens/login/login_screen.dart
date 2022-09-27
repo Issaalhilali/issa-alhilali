@@ -2,8 +2,11 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:quizu/const/colors.dart';
+import 'package:quizu/const/images.dart';
 import 'package:quizu/const/padd.dart';
+import 'package:quizu/const/text_style.dart';
 import 'package:quizu/screens/login/otp.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -60,13 +63,9 @@ class _LoginScreenState extends State<LoginScreen> {
               width: double.infinity,
               height: MediaQuery.of(context).size.height,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  // Image.network(
-                  //   'https://ouch-cdn2.icons8.com/n9XQxiCMz0_zpnfg9oldMbtSsG7X6NwZi_kLccbLOKw/rs:fit:392:392/czM6Ly9pY29uczgu/b3VjaC1wcm9kLmFz/c2V0cy9zdmcvNDMv/MGE2N2YwYzMtMjQw/NC00MTFjLWE2MTct/ZDk5MTNiY2IzNGY0/LnN2Zw.png',
-                  //   fit: BoxFit.cover,
-                  //   width: 280,
-                  // ),
+                  Image.asset(quiz),
                   padd20,
                   padd20,
                   FadeInDown(
@@ -119,12 +118,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           InternationalPhoneNumberInput(
                             initialValue:
                                 PhoneNumber(isoCode: 'SA', dialCode: ''),
-                            onInputChanged: (PhoneNumber number) {
-                              print(number.phoneNumber);
-                            },
-                            onInputValidated: (bool value) {
-                              print(value);
-                            },
+                            onInputChanged: (PhoneNumber number) {},
+                            onInputValidated: (bool value) {},
                             selectorConfig: const SelectorConfig(
                               selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
                             ),
@@ -134,7 +129,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 const TextStyle(color: Colors.black),
                             textFieldController: controller,
                             formatInput: false,
-                            maxLength: 9,
+                            maxLength: 10,
+
                             keyboardType: const TextInputType.numberWithOptions(
                                 signed: true, decimal: true),
                             cursorColor: Colors.white.withOpacity(0.8),
@@ -146,9 +142,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               hintStyle: TextStyle(
                                   color: Colors.grey.shade500, fontSize: 16),
                             ),
-                            onSaved: (PhoneNumber number) {
-                              print('On Saved: $number');
-                            },
+                            // onSaved: (PhoneNumber number) {
+                            //   print('On Saved: $number');
+                            // },
                           ),
                           Positioned(
                             left: 90,
@@ -167,9 +163,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   // TextFormField(
                   //   controller: controller,
                   // ),
-                  const SizedBox(
-                    height: 100,
-                  ),
+                  padd20,
+                  padd20,
                   FadeInDown(
                     delay: const Duration(milliseconds: 600),
                     child: MaterialButton(
@@ -203,10 +198,26 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                     ),
                   ),
+                  padd20,
+                  TextButton(
+                      onPressed: () {
+                        _launchUrl();
+                      },
+                      child: normalText(
+                          text: 'Developer by Issa Alhilali',
+                          color: lightgrey)),
                 ],
               ),
             ),
           ),
         )));
+  }
+
+  Future<void> _launchUrl() async {
+    final Uri url = Uri.parse('https://www.linkedin.com/in/issaalhilali/');
+
+    if (!await launchUrl(url)) {
+      throw 'Could not launch $url';
+    }
   }
 }

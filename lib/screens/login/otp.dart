@@ -3,9 +3,6 @@ import 'dart:async';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:lottie/lottie.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:quizu/const/colors.dart';
 import 'package:quizu/const/padd.dart';
@@ -24,6 +21,7 @@ class _OtpScreenState extends State<OtpScreen> {
   bool _isLoading = false;
   Repository repository = Repository();
   TextEditingController otpcontroll = TextEditingController();
+  // ignore: prefer_typing_uninitialized_variables
   var onTapRecognizer;
 
   // ..text = "123456";
@@ -87,7 +85,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   padding: const EdgeInsets.all(30.0),
                   child: PinCodeTextField(
                     appContext: context,
-                    pastedTextStyle: TextStyle(
+                    pastedTextStyle: const TextStyle(
                       color: lightgrey,
                       fontWeight: FontWeight.bold,
                     ),
@@ -116,8 +114,8 @@ class _OtpScreenState extends State<OtpScreen> {
                         // selectedColor: Colors.grey,
                         inactiveFillColor: Colors.grey),
                     cursorColor: Colors.black,
-                    animationDuration: Duration(milliseconds: 300),
-                    textStyle: TextStyle(fontSize: 20, height: 1.6),
+                    animationDuration: const Duration(milliseconds: 300),
+                    textStyle: const TextStyle(fontSize: 20, height: 1.6),
                     backgroundColor: Colors.transparent,
                     enableActiveFill: true,
                     errorAnimationController: errorController,
@@ -137,13 +135,11 @@ class _OtpScreenState extends State<OtpScreen> {
                     //   login();
                     // },
                     onChanged: (value) {
-                      print(value);
                       setState(() {
                         currentText = value;
                       });
                     },
                     beforeTextPaste: (text) {
-                      print("Allowing to paste $text");
                       //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
                       //but you can show anything you want here, like your pop up saying wrong paste format or etc
                       return true;

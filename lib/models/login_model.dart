@@ -15,7 +15,7 @@ class CreateModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['sucess'] = sucess;
     data['user_status'] = userStatus;
     data['message'] = msg;
@@ -25,6 +25,7 @@ class CreateModel {
   }
 }
 
+// ignore: camel_case_types
 class errorlogin {
   bool? sucess;
   String? msg;
@@ -37,9 +38,9 @@ class errorlogin {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['sucess'] = this.sucess;
-    data['msg'] = this.msg;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['sucess'] = sucess;
+    data['msg'] = msg;
     return data;
   }
 }
@@ -56,9 +57,9 @@ class NameMode {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.name;
-    data['mobile'] = this.mobile;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['name'] = name;
+    data['mobile'] = mobile;
     return data;
   }
 }
@@ -81,7 +82,7 @@ class LoginMode {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['success'] = success;
     data['msg'] = msg;
     data['token'] = token;
